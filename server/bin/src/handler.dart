@@ -36,6 +36,8 @@ void handleApp(Polo serverManager, String namsepace) {
           'at': DateTime.now().toUtc().toIso8601String()
         }
       }).ignore();
+    } on DioException catch (e) {
+      logger.e(e.message);
     } catch (e) {
       logger.e(e.toString());
     }
@@ -62,6 +64,8 @@ void handleApp(Polo serverManager, String namsepace) {
           'at': DateTime.now().toUtc().toIso8601String()
         }
       }).ignore();
+    } on DioException catch (e) {
+      logger.e(e.message);
     } catch (e) {
       logger.e(e.toString());
     }
