@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:polo_server/polo_server.dart';
 
 import 'constants.dart';
@@ -13,6 +14,7 @@ void handleApp(Polo serverManager, String namsepace) {
   logger.i('App "$namsepace" started listening');
 
   final dio = Dio();
+  dio.interceptors.add(RetryInterceptor(dio: dio, logPrint: logger.i));
   final app = serverManager.of(namsepace);
   final appId = namsepace.replaceFirst('/', '');
 
@@ -32,12 +34,9 @@ void handleApp(Polo serverManager, String namsepace) {
       final webhook = appData['webhook'] as String;
       dio
           .post<dynamic>(webhook, data: {
-            'chat_id': '995426763',
-            'text': {
-              ...record,
-              'status': 'connected',
-              'at': DateTime.now().toUtc().toIso8601String()
-            }
+            ...record,
+            'status': 'connected',
+            'at': DateTime.now().toUtc().toIso8601String()
           })
           .catchError((Object? e) => logger.e(e.toString()))
           .ignore();
@@ -58,14 +57,11 @@ void handleApp(Polo serverManager, String namsepace) {
       final webhook = appData['webhook'] as String;
       dio
           .post<dynamic>(webhook, data: {
-            'chat_id': '995426763',
-            'text': {
-              'app_id': record['app_id'],
-              'client_id': record['client_id'],
-              'payload': record['payload'],
-              'status': 'disconnected',
-              'at': DateTime.now().toUtc().toIso8601String()
-            }
+            'app_id': record['app_id'],
+            'client_id': record['client_id'],
+            'payload': record['payload'],
+            'status': 'disconnected',
+            'at': DateTime.now().toUtc().toIso8601String()
           })
           .catchError((Object? e) => logger.e(e.toString()))
           .ignore();
