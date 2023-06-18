@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:logger/logger.dart';
 import 'package:supabase/supabase.dart';
 
@@ -9,8 +11,8 @@ final logger = Logger(
   level: Level.info,
 );
 final supabaseClient = SupabaseClient(
-  const String.fromEnvironment('SUPABASE_URL'),
-  const String.fromEnvironment('SUPABASE_KEY'),
+  Platform.environment['SUPABASE_URL']!,
+  Platform.environment['SUPABASE_KEY']!,
 );
 
 final supabase = SupabaseService(supabaseClient);
