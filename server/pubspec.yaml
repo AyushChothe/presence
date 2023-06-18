@@ -1,0 +1,22 @@
+name: server
+description: A server app using the shelf package and Docker.
+version: 1.0.0
+# repository: https://github.com/my_org/my_repo
+
+environment:
+  sdk: ^3.0.2
+
+dependencies:
+  args: ^2.3.0
+  dio: ^5.2.1+1
+  logger: ^1.4.0
+  polo_server:
+    git:
+      url: https://github.com/AyushChothe/polo
+      path: ./polo_server
+      ref: 516d302
+  supabase: ^1.9.3
+
+dev_dependencies:
+  test: ^1.21.0
+  very_good_analysis: ^5.0.0+1
