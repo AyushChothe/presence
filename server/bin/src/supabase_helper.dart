@@ -18,7 +18,7 @@ class SupabaseService {
       .eq('client_id', clientId)
       .select<PostgrestMap>()
       .single()
-      .catchError((_) => null);
+      .catchError((_) => const <PostgrestMap>{});
 
   Future<void> clearPayloads() async =>
       await payloads.delete().neq('client_id', '0');

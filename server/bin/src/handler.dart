@@ -9,13 +9,14 @@ void handleApp(Polo serverManager, String namsepace) {
   if (serverManager.hasNamespace(namsepace)) return;
 
   logger.i('App "$namsepace" started listening');
-  final dio = Dio();
+
   final app = serverManager.of(namsepace);
   final appId = namsepace.replaceFirst('/', '');
 
   // Function to handle user join
   Future<void> onPresence(PoloClient client, Map<String, dynamic> data) async {
     try {
+      final dio = Dio();
       // Strore Data
       final record = {
         'app_id': appId,
@@ -27,14 +28,14 @@ void handleApp(Polo serverManager, String namsepace) {
       // Trigger WebHook Connected
       final appData = await supabase.getAppData(appId);
       final webhook = appData['webhook'] as String;
-      unawaited(dio.post<dynamic>(webhook, data: {
+      dio.post<dynamic>(webhook, data: {
         'chat_id': '995426763',
         'text': {
           ...record,
           'status': 'connected',
           'at': DateTime.now().toUtc().toIso8601String()
         }
-      }));
+      }).ignore();
     } catch (e) {
       logger.e(e.toString());
     }
@@ -43,6 +44,7 @@ void handleApp(Polo serverManager, String namsepace) {
   // Function to handel user leave
   Future<void> onDiconnect(String clientId, _, __) async {
     try {
+      final dio = Dio();
       logger.i('Client disconnected: $clientId');
       // Delete Data
       final record = await supabase.deletePayload(clientId);
@@ -50,7 +52,7 @@ void handleApp(Polo serverManager, String namsepace) {
       // Trigger WebHook Disconnected
       final appData = await supabase.getAppData(appId);
       final webhook = appData['webhook'] as String;
-      await dio.post<dynamic>(webhook, data: {
+      dio.post<dynamic>(webhook, data: {
         'chat_id': '995426763',
         'text': {
           'app_id': record['app_id'],
@@ -59,7 +61,7 @@ void handleApp(Polo serverManager, String namsepace) {
           'status': 'disconnected',
           'at': DateTime.now().toUtc().toIso8601String()
         }
-      });
+      }).ignore();
     } catch (e) {
       logger.e(e.toString());
     }
