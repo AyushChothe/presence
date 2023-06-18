@@ -21,5 +21,5 @@ class SupabaseService {
       .catchError((_) => null);
 
   Future<void> clearPayloads() async =>
-      await payloads.delete().neq('client_id', '');
+      await payloads.delete().neq('client_id', '0');
 }
